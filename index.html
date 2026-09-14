@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfect Teaching PDF Generator - 2 Column Layout</title>
+    
+    <!-- MathJax Configuration for Single Dollar ($) support -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <!-- MathJax CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --hindi-color: #991b1b;
+            --eng-color: #1f2937;
+            --bg-color: #f1f5f9;
+        }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; background: var(--bg-color); color: #333; }
+        .control-panel { max-width: 900px; margin: 20px auto; background: #ffffff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .control-panel h2 { margin-top: 0; color: var(--primary-color); border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+        
+        .form-section { background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
+        .form-section h3 { margin-top: 0; color: #334155; font-size: 16px; }
+        
+        .row { display: flex; gap: 15px; margin-bottom: 10px; }
+        .col { flex: 1; }
+        
+        label { display: block; font-weight: 600; margin-bottom: 3px; color: #475569; font-size: 13px; }
+        input[type="text"], textarea { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
+        textarea { height: 70px; resize: vertical; }
+        
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        button { padding: 10px 20px; border: none; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .btn-primary { background: #2563eb; color: white; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-success { background: #16a34a; color: white; }
+        .btn-success:hover { background: #15803d; }
+        .btn-warning { background: #d97706; color: white; }
+        .btn-warning:hover { background: #b45309; }
+        .btn-print { background: #9333ea; color: white; }
+        .btn-print:hover { background: #7e22ce; }
+
+        /* --- 2-COLUMN DOCUMENT CONTAINER WITH MIDDLE LINE --- */
+        .document-container { 
+            max-width: 210mm; 
+            min-height: 297mm; 
+            margin: 20px auto; 
+            background: white; 
+            padding: 12mm; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.1); 
+            box-sizing: border-box; 
+            
+            /* Two Column Properties */
+            column-count: 2;
+            column-gap: 8mm;
+            column-rule: 1px solid #cbd5e1; 
+        }
+
+        .type-banner { 
+            column-span: all; 
+            border: 2px solid #1e293b; 
+            border-radius: 6px; 
+            margin: 10px 0 15px 0; 
+            overflow: hidden; 
+            break-inside: avoid;
+            page-break-inside: avoid; 
+        }
+        .type-header-badge { background: #1e293b; color: white; display: inline-block; padding: 4px 15px; font-weight: bold; font-size: 14px; border-bottom-right-radius: 6px; }
+        .type-title { text-align: center; font-size: 18px; font-weight: bold; color: #0f172a; padding: 8px 10px; background: #f1f5f9; border-bottom: 1px solid #1e293b; }
+        
+        .question-item { 
+            margin-bottom: 15px; 
+            break-inside: avoid; 
+            page-break-inside: avoid; 
+            display: flex; 
+            align-items: flex-start; 
+            gap: 8px; 
+            border-bottom: 1px dashed #e2e8f0; 
+            padding-bottom: 12px; 
+        }
+        .q-number { font-size: 15px; font-weight: bold; color: #0f172a; min-width: 24px; text-align: right; }
+        .q-content-wrapper { flex: 1; }
+        .q-header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .q-texts { flex: 1; }
+        .q-english { font-size: 13px; font-weight: bold; color: var(--eng-color); line-height: 1.3; }
+        .q-hindi { font-size: 12px; font-weight: bold; color: var(--hindi-color); margin-top: 3px; line-height: 1.3; }
+        .q-tag { background: #000; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 3px; white-space: nowrap; font-family: monospace; flex-shrink: 0; margin-top: 2px; }
+        
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; margin-top: 8px; font-size: 12px; font-weight: 500; color: #1e293b; }
+        .option-item { display: flex; gap: 4px; }
+        .option-key { font-weight: bold; }
+
+        @media print {
+            body { background: white; }
+            .control-panel { display: none; }
+            .document-container { box-shadow: none; margin: 0; padding: 10mm; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="control-panel">
+        <h2>⚡ Teaching PDF Generator Dashboard (2-Column Layout)</h2>
+
+        <!-- SECTION 1: ADD TYPE & TOPIC HEADING -->
+        <div class="form-section" style="border-left: 4px solid #d97706;">
+            <h3>🏷️ Naya Type & Topic Heading Jodein</h3>
+            <div class="row">
+                <div class="col" style="flex: 0 0 150px;">
+                    <label>Type Badge</label>
+                    <input type="text" id="typeName" placeholder="TYPE - 1">
+                </div>
+                <div class="col">
+                    <label>Topic Title (Subtitle)</label>
+                    <input type="text" id="typeTopic" placeholder="Basic Rules (2^n, 5^n, 3, 9)">
+                </div>
+            </div>
+            <button class="btn-warning" style="margin-top: 5px;" onclick="addTypeBanner()">🏷️ Type Banner Jodein</button>
+        </div>
+
+        <!-- SECTION 2: ADD SINGLE QUESTION -->
+        <div class="form-section">
+            <h3>➕ Add New Question</h3>
+            <div class="row">
+                <div class="col" style="flex: 0 0 80px;">
+                    <label>Q. No.</label>
+                    <input type="text" id="qNum" placeholder="1">
+                </div>
+                <div class="col">
+                    <label>Question Tag / Exam Name (Right side)</label>
+                    <input type="text" id="qTag" placeholder="SSC CPO 2024">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>English Question (Use $...$ for Math)</label>
+                    <textarea id="qEng" placeholder="Enter English question..."></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Hindi Question (Use $...$ for Math)</label>
+                    <textarea id="qHin" placeholder="यहाँ हिंदी प्रश्न लिखें..."></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col"><label>Option (a)</label><input type="text" id="optA" placeholder="Option A"></div>
+                <div class="col"><label>Option (b)</label><input type="text" id="optB" placeholder="Option B"></div>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col"><label>Option (c)</label><input type="text" id="optC" placeholder="Option C"></div>
+                <div class="col"><label>Option (d)</label><input type="text" id="optD" placeholder="Option D"></div>
+            </div>
+            <button class="btn-success" style="margin-top: 10px;" onclick="addNewQuestionForm()">➕ Question List Mein Jodein</button>
+        </div>
+
+        <!-- SECTION 3: BULK PASTE -->
+        <div class="form-section">
+            <h3>📂 Bulk Paste Option</h3>
+            <textarea id="bulkInput" style="height: 100px;" placeholder="Yahan multiple questions --- lagakar paste kar sakte hain..."></textarea>
+            <button class="btn-primary" style="margin-top: 10px;" onclick="parseBulkInput()">🚀 Bulk Data Load Karein</button>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+        </div>
+    </div>
+
+    <!-- RENDERED DOCUMENT VIEW -->
+    <div class="document-container" id="pdfPreviewArea"></div>
+
+    <script>
+        let contentItems = [];
+
+        function renderDocument() {
+            let html = '';
+
+            if (contentItems.length === 0) {
+                html = `<p style="text-align:center; color:#94a3b8; padding: 20px; column-span: all;">Abhi kuch nahi hai. Upar Type banner ya Questions jodein.</p>`;
+            }
+
+            contentItems.forEach((item) => {
+                if (item.type === 'banner') {
+                    html += `
+                        <div class="type-banner">
+                            <div class="type-header-badge">${item.name}</div>
+                            <div class="type-title">${item.topic}</div>
+                        </div>
+                    `;
+                } else if (item.type === 'question') {
+                    let q = item.data;
+                    html += `
+                        <div class="question-item">
+                            <div class="q-number">${q.num}.</div>
+                            <div class="q-content-wrapper">
+                                <div class="q-header-row">
+                                    <div class="q-texts">
+                                        <div class="q-english">${q.eng}</div>
+                                        ${q.hin ? `<div class="q-hindi">${q.hin}</div>` : ''}
+                                    </div>
+                                    ${q.tag ? `<div class="q-tag">${q.tag}</div>` : ''}
+                                </div>
+                                <div class="options-grid">
+                                    <div class="option-item"><span class="option-key">(a)</span> <span>${q.a}</span></div>
+                                    <div class="option-item"><span class="option-key">(b)</span> <span>${q.b}</span></div>
+                                    <div class="option-item"><span class="option-key">(c)</span> <span>${q.c}</span></div>
+                                    <div class="option-item"><span class="option-key">(d)</span> <span>${q.d}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            document.getElementById('pdfPreviewArea').innerHTML = html;
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise().catch((err) => console.log(err));
+            }
+        }
+
+        function addTypeBanner() {
+            let name = document.getElementById('typeName').value.trim();
+            let topic = document.getElementById('typeTopic').value.trim();
+            if (!name && !topic) return;
+            contentItems.push({ type: 'banner', name: name || 'TYPE', topic: topic || '' });
+            renderDocument();
+        }
+
+        function addNewQuestionForm() {
+            let num = document.getElementById('qNum').value.trim();
+            let tag = document.getElementById('qTag').value.trim();
+            let eng = document.getElementById('qEng').value.trim();
+            let hin = document.getElementById('qHin').value.trim();
+            let a = document.getElementById('optA').value.trim();
+            let b = document.getElementById('optB').value.trim();
+            let c = document.getElementById('optC').value.trim();
+            let d = document.getElementById('optD').value.trim();
+
+            if (!eng) return;
+
+            contentItems.push({
+                type: 'question',
+                data: { num: num || '1', tag, eng, hin, a, b, c, d }
+            });
+
+            renderDocument();
+
+            document.getElementById('qNum').value = '';
+            document.getElementById('qTag').value = '';
+            document.getElementById('qEng').value = '';
+            document.getElementById('qHin').value = '';
+            document.getElementById('optA').value = '';
+            document.getElementById('optB').value = '';
+            document.getElementById('optC').value = '';
+            document.getElementById('optD').value = '';
+        }
+
+        // --- FIXED & IMPROVED BULK PARSER ---
+        function parseBulkInput() {
+            let rawText = document.getElementById('bulkInput').value;
+            if(!rawText.trim()) return;
+
+            // '---' से सभी सवालों को अलग-अलग ब्लॉक्स में बांटें
+            let blocks = rawText.split('---');
+            let currentAutoNum = 1;
+
+            // अगर पहले से कुछ सवाल हैं, तो ऑटो-नंबरिंग उनके आगे से शुरू हो सकती है
+            contentItems.forEach(item => {
+                if(item.type === 'question' && !isNaN(item.data.num)) {
+                    let n = parseInt(item.data.num);
+                    if(n >= currentAutoNum) currentAutoNum = n + 1;
+                }
+            });
+
+            blocks.forEach((block) => {
+                let text = block.trim();
+                if(!text) return;
+
+                // सवाल नंबर ढूंढना (जैसे "1." या "1)")
+                let numMatch = text.match(/^([0-9]+)[\.\)]\s*/);
+                let qNum = numMatch ? numMatch[1] : currentAutoNum++;
+                if(numMatch) text = text.replace(/^([0-9]+)[\.\)]\s*/, '');
+
+                // टैग ढूंढना (जैसे [SSC CPO 2024])
+                let tagText = '';
+                let tagMatch = text.match(/\[TAG:\s*([^\]]+)\]/i) || text.match(/\[(SSC[^\]]+|RRB[^\]]+|Selection[^\]]+|CGL[^\]]+|CHSL[^\]]+|GD[^\]]+)\]/i);
+                if (tagMatch) {
+                    tagText = tagMatch[1].trim();
+                    text = text.replace(tagMatch[0], '');
+                }
+
+                // ऑप्शन्स (a), (b), (c), (d) ढूंढना
+                let optA = '', optB = '', optC = '', optD = '';
+                let aMatch = text.match(/\(a\)\s*([^\(]+)(?=\(b\)|$)/i);
+                let bMatch = text.match(/\(b\)\s*([^\(]+)(?=\(c\)|$)/i);
+                let cMatch = text.match(/\(c\)\s*([^\(]+)(?=\(d\)|$)/i);
+                let dMatch = text.match(/\(d\)\s*([^\n]+)/i);
+
+                if(aMatch) optA = aMatch[1].trim();
+                if(bMatch) optB = bMatch[1].trim();
+                if(cMatch) optC = cMatch[1].trim();
+                if(dMatch) optD = dMatch[1].trim();
+
+                // मुख्य प्रश्न का हिस्सा (जहाँ से ऑप्शन्स शुरू होते हैं, उसके पहले का टेक्स्ट)
+                let mainTextPart = text;
+                if(aMatch) {
+                    let idx = text.indexOf('(a)');
+                    if(idx !== -1) mainTextPart = text.substring(0, idx).trim();
+                }
+
+                // अंग्रेजी और हिंदी लाइनों को अलग करना
+                let lines = mainTextPart.split('\n').map(l => l.trim()).filter(l => l);
+                let engLines = [], hinLines = [];
+                lines.forEach(l => {
+                    if (/[\u0900-\u097F]/.test(l)) {
+                        hinLines.push(l);
+                    } else {
+                        engLines.push(l);
+                    }
+                });
+
+                // लिस्ट में जोड़ें
+                contentItems.push({
+                    type: 'question',
+                    data: {
+                        num: qNum,
+                        tag: tagText,
+                        eng: engLines.join(' '),
+                        hin: hinLines.join(' '),
+                        a: optA, 
+                        b: optB, 
+                        c: optC, 
+                        d: optD
+                    }
+                });
+            });
+
+            // बॉक्स खाली करें और रेंडर करें
+            document.getElementById('bulkInput').value = '';
+            renderDocument();
+        }
+
+        window.onload = function() {
+            renderDocument();
+        };
+    </script>
+</body>
+</html>
