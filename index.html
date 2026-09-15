@@ -2,356 +2,284 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <title>Perfect Teaching PDF Generator - 2 Column Layout</title>
+    <title>Smart Question Formatter PRO (Watermark Edition)</title>
     
-    <!-- MathJax Configuration for Single Dollar ($) support -->
+    <!-- गणित (Maths) को प्रोफेशनल बनाने के लिए MathJax स्क्रिप्ट -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            }
+        window.MathJax = { 
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
         };
     </script>
-    <!-- MathJax CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 
     <style>
-        :root {
-            --primary-color: #0f172a;
-            --hindi-color: #991b1b;
-            --eng-color: #1f2937;
-            --bg-color: #f1f5f9;
-        }
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; background: var(--bg-color); color: #333; }
-        .control-panel { max-width: 900px; margin: 20px auto; background: #ffffff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .control-panel h2 { margin-top: 0; color: var(--primary-color); border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+        /* स्क्रीन पर दिखने वाला डिज़ाइन (UI) */
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; }
+        .control-panel { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .control-panel h2 { margin-top: 0; color: #333; }
+        label { font-weight: bold; margin-top: 10px; display: block; }
+        input[type="text"], textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        textarea { height: 130px; font-family: monospace; }
         
-        .form-section { background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
-        .form-section h3 { margin-top: 0; color: #334155; font-size: 16px; }
+        /* बटन्स का डिज़ाइन */
+        .btn-group { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+        button { background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 15px; font-weight: bold; }
+        button:hover { background-color: #0056b3; }
+        .btn-success { background-color: #28a745; }
+        .btn-success:hover { background-color: #218838; }
+        .btn-danger { background-color: #dc3545; }
+        .btn-danger:hover { background-color: #c82333; }
         
-        .row { display: flex; gap: 15px; margin-bottom: 10px; }
-        .col { flex: 1; }
-        
-        label { display: block; font-weight: 600; margin-bottom: 3px; color: #475569; font-size: 13px; }
-        input[type="text"], textarea { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
-        textarea { height: 70px; resize: vertical; }
-        
-        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        button { padding: 10px 20px; border: none; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; }
-        .btn-primary { background: #2563eb; color: white; }
-        .btn-primary:hover { background: #1d4ed8; }
-        .btn-success { background: #16a34a; color: white; }
-        .btn-success:hover { background: #15803d; }
-        .btn-warning { background: #d97706; color: white; }
-        .btn-warning:hover { background: #b45309; }
-        .btn-print { background: #9333ea; color: white; }
-        .btn-print:hover { background: #7e22ce; }
-
-        /* --- 2-COLUMN DOCUMENT CONTAINER WITH MIDDLE LINE --- */
-        .document-container { 
-            max-width: 210mm; 
-            min-height: 297mm; 
-            margin: 20px auto; 
+        /* PDF पेज का डिज़ाइन */
+        #print-area { 
             background: white; 
-            padding: 12mm; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.1); 
-            box-sizing: border-box; 
-            
-            /* Two Column Properties */
-            column-count: 2;
-            column-gap: 8mm;
-            column-rule: 1px solid #cbd5e1; 
-        }
-
-        .type-banner { 
-            column-span: all; 
-            border: 2px solid #1e293b; 
-            border-radius: 6px; 
-            margin: 10px 0 15px 0; 
+            padding: 40px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            min-height: 500px; 
+            display: none; 
+            position: relative; 
             overflow: hidden; 
-            break-inside: avoid;
-            page-break-inside: avoid; 
         }
-        .type-header-badge { background: #1e293b; color: white; display: inline-block; padding: 4px 15px; font-weight: bold; font-size: 14px; border-bottom-right-radius: 6px; }
-        .type-title { text-align: center; font-size: 18px; font-weight: bold; color: #0f172a; padding: 8px 10px; background: #f1f5f9; border-bottom: 1px solid #1e293b; }
         
-        .question-item { 
-            margin-bottom: 15px; 
-            break-inside: avoid; 
-            page-break-inside: avoid; 
-            display: flex; 
-            align-items: flex-start; 
-            gap: 8px; 
-            border-bottom: 1px dashed #e2e8f0; 
-            padding-bottom: 12px; 
+        /* वॉटरमार्क (ताकि हर पेज पर तिरछा Basic Concept लिखा आए) */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-35deg);
+            font-size: 85px;
+            font-weight: bold;
+            color: rgba(200, 200, 200, 0.22); /* बहुत हल्का ग्रे रंग */
+            white-space: nowrap;
+            z-index: 0;
+            pointer-events: none;
+            user-select: none;
+            text-transform: uppercase;
+            letter-spacing: 5px;
         }
-        .q-number { font-size: 15px; font-weight: bold; color: #0f172a; min-width: 24px; text-align: right; }
-        .q-content-wrapper { flex: 1; }
-        .q-header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-        .q-texts { flex: 1; }
-        .q-english { font-size: 13px; font-weight: bold; color: var(--eng-color); line-height: 1.3; }
-        .q-hindi { font-size: 12px; font-weight: bold; color: var(--hindi-color); margin-top: 3px; line-height: 1.3; }
-        .q-tag { background: #000; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 3px; white-space: nowrap; font-family: monospace; flex-shrink: 0; margin-top: 2px; }
-        
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; margin-top: 8px; font-size: 12px; font-weight: 500; color: #1e293b; }
-        .option-item { display: flex; gap: 4px; }
-        .option-key { font-weight: bold; }
 
+        /* कंटेंट को वॉटरमार्क के ऊपर रखने के लिए */
+        .columns-container, .header-wrapper, .type-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* टॉपिक और टाइप के कंटेनर (बाईं तरफ) */
+        .header-wrapper { margin-top: 20px; margin-bottom: 5px; page-break-inside: avoid; }
+        .type-wrapper { margin-bottom: 25px; page-break-inside: avoid; }
+        
+        .header-title { text-align: left; font-size: 24px; font-weight: bold; text-decoration: underline; text-transform: uppercase; }
+        .header-type { text-align: left; font-size: 18px; font-weight: bold; color: #555; }
+        
+        /* 2-कॉलम लेआउट */
+        .columns-container { 
+            column-count: 2; 
+            column-gap: 40px; 
+            column-rule: 2px solid black; 
+        }
+        
+        .question-block { page-break-inside: avoid; margin-bottom: 30px; line-height: 1.5; position: relative; }
+        
+        /* डिलीट और एडिट बटन का स्टाइल */
+        .delete-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            padding: 2px 6px;
+        }
+        .delete-btn:hover { background: #cc0000; }
+
+        .edit-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #ffc107;
+            color: black;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            padding: 2px 6px;
+            font-weight: bold;
+        }
+        .edit-btn:hover { background: #e0a800; }
+
+        /* रंगों की सेटिंग: इंग्लिश काली, हिंदी लाल */
+        .eng-text { color: black; font-weight: bold; margin-bottom: 4px; }
+        .hin-text { color: red; margin-bottom: 4px; }
+        
+        .tag-container { text-align: right; margin-bottom: 8px; }
+        .tag { color: black; font-weight: bold; font-size: 12px; background-color: #e0e0e0; padding: 2px 6px; border-radius: 3px; }
+        .options-table { width: 100%; color: black; font-weight: bold; margin-top: 5px; }
+        .options-table td { width: 50%; padding: 3px 0; vertical-align: middle; }
+
+        /* प्रिंट करते समय सिर्फ print-area दिखेगा और बटन्स छिप जाएंगे */
         @media print {
-            body { background: white; }
-            .control-panel { display: none; }
-            .document-container { box-shadow: none; margin: 0; padding: 10mm; width: 100%; }
+            body { background: white; margin: 0; padding: 0; }
+            .control-panel { display: none; } 
+            .delete-btn, .edit-btn { display: none !important; }
+            #print-area { display: block; box-shadow: none; padding: 0; }
         }
     </style>
 </head>
 <body>
 
     <div class="control-panel">
-        <h2>⚡ Teaching PDF Generator Dashboard (2-Column Layout)</h2>
-
-        <!-- SECTION 1: ADD TYPE & TOPIC HEADING -->
-        <div class="form-section" style="border-left: 4px solid #d97706;">
-            <h3>🏷️ Naya Type & Topic Heading Jodein</h3>
-            <div class="row">
-                <div class="col" style="flex: 0 0 150px;">
-                    <label>Type Badge</label>
-                    <input type="text" id="typeName" placeholder="TYPE - 1">
-                </div>
-                <div class="col">
-                    <label>Topic Title (Subtitle)</label>
-                    <input type="text" id="typeTopic" placeholder="Basic Rules (2^n, 5^n, 3, 9)">
-                </div>
-            </div>
-            <button class="btn-warning" style="margin-top: 5px;" onclick="addTypeBanner()">🏷️ Type Banner Jodein</button>
-        </div>
-
-        <!-- SECTION 2: ADD SINGLE QUESTION -->
-        <div class="form-section">
-            <h3>➕ Add New Question</h3>
-            <div class="row">
-                <div class="col" style="flex: 0 0 80px;">
-                    <label>Q. No.</label>
-                    <input type="text" id="qNum" placeholder="1">
-                </div>
-                <div class="col">
-                    <label>Question Tag / Exam Name (Right side)</label>
-                    <input type="text" id="qTag" placeholder="SSC CPO 2024">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <label>English Question (Use $...$ for Math)</label>
-                    <textarea id="qEng" placeholder="Enter English question..."></textarea>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <label>Hindi Question (Use $...$ for Math)</label>
-                    <textarea id="qHin" placeholder="यहाँ हिंदी प्रश्न लिखें..."></textarea>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col"><label>Option (a)</label><input type="text" id="optA" placeholder="Option A"></div>
-                <div class="col"><label>Option (b)</label><input type="text" id="optB" placeholder="Option B"></div>
-            </div>
-            <div class="row" style="margin-top: 10px;">
-                <div class="col"><label>Option (c)</label><input type="text" id="optC" placeholder="Option C"></div>
-                <div class="col"><label>Option (d)</label><input type="text" id="optD" placeholder="Option D"></div>
-            </div>
-            <button class="btn-success" style="margin-top: 10px;" onclick="addNewQuestionForm()">➕ Question List Mein Jodein</button>
-        </div>
-
-        <!-- SECTION 3: BULK PASTE -->
-        <div class="form-section">
-            <h3>📂 Bulk Paste Option</h3>
-            <textarea id="bulkInput" style="height: 100px;" placeholder="Yahan multiple questions --- lagakar paste kar sakte hain..."></textarea>
-            <button class="btn-primary" style="margin-top: 10px;" onclick="parseBulkInput()">🚀 Bulk Data Load Karein</button>
-        </div>
-
+        <h2>📚 Smart Question Formatter to PDF</h2>
+        
+        <label for="topic">Topic (विषय):</label>
+        <input type="text" id="topic" placeholder="e.g., Classification of Number">
+        
+        <label for="type">Type (प्रकार):</label>
+        <input type="text" id="type" placeholder="e.g., TYPE - I">
+        
+        <label for="rawText">Questions Paste Here (एक या एक से ज़्यादा प्रश्न पेस्ट करें):</label>
+        <p style="font-size: 12px; color: #666; margin-top: 0;"><i>नोट: इंग्लिश लाइन के बाद <b>Enter</b> दबाकर हिंदी को नीचे रखें। मैथ के फॉर्मूले <b>$</b> के बीच लिखें।</i></p>
+        <textarea id="rawText" placeholder="32. $(142^2 - 1)$ is divisible by:&#10;$(142^2 - 1)$ से विभाज्य है:&#10;[SSC CGL 2023]&#10;(a) 19 (b) 7 (c) 9 (d) 13"></textarea>
+        
         <div class="btn-group">
-            <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+            <button onclick="addQuestions()">➕ Add Question / Section</button>
+            <button class="btn-success" onclick="window.print()">🖨️ Download .PDF</button>
+            <button class="btn-danger" onclick="clearPreview()">🗑️ Clear All</button>
         </div>
     </div>
 
-    <!-- RENDERED DOCUMENT VIEW -->
-    <div class="document-container" id="pdfPreviewArea"></div>
+    <!-- यह हिस्सा PDF में छपेगा -->
+    <div id="print-area">
+        <!-- बैकग्राउंड वॉटरमार्क -->
+        <div class="watermark">Basic Concept</div>
+
+        <div class="columns-container" id="questions-container">
+            <!-- यहाँ टॉपिक्स, टाइप्स और प्रश्न लाइन-बाय-लाइन जुड़ते जाएंगे -->
+        </div>
+    </div>
 
     <script>
-        let contentItems = [];
-
-        function renderDocument() {
-            let html = '';
-
-            if (contentItems.length === 0) {
-                html = `<p style="text-align:center; color:#94a3b8; padding: 20px; column-span: all;">Abhi kuch nahi hai. Upar Type banner ya Questions jodein.</p>`;
+        function addQuestions() {
+            let topicVal = document.getElementById('topic').value.trim();
+            let typeVal = document.getElementById('type').value.trim();
+            let rawText = document.getElementById('rawText').value.trim();
+            let container = document.getElementById('questions-container');
+            
+            if(topicVal === "" && typeVal === "" && rawText === "") {
+                alert("कृपया पहले कुछ डेटा दर्ज करें!");
+                return;
             }
 
-            contentItems.forEach((item) => {
-                if (item.type === 'banner') {
-                    html += `
-                        <div class="type-banner">
-                            <div class="type-header-badge">${item.name}</div>
-                            <div class="type-title">${item.topic}</div>
-                        </div>
-                    `;
-                } else if (item.type === 'question') {
-                    let q = item.data;
-                    html += `
-                        <div class="question-item">
-                            <div class="q-number">${q.num}.</div>
-                            <div class="q-content-wrapper">
-                                <div class="q-header-row">
-                                    <div class="q-texts">
-                                        <div class="q-english">${q.eng}</div>
-                                        ${q.hin ? `<div class="q-hindi">${q.hin}</div>` : ''}
-                                    </div>
-                                    ${q.tag ? `<div class="q-tag">${q.tag}</div>` : ''}
-                                </div>
-                                <div class="options-grid">
-                                    <div class="option-item"><span class="option-key">(a)</span> <span>${q.a}</span></div>
-                                    <div class="option-item"><span class="option-key">(b)</span> <span>${q.b}</span></div>
-                                    <div class="option-item"><span class="option-key">(c)</span> <span>${q.c}</span></div>
-                                    <div class="option-item"><span class="option-key">(d)</span> <span>${q.d}</span></div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
+            // 1. नया Topic जोड़ें (Edit बटन के साथ)
+            if(topicVal !== "") {
+                let topicId = 'topic-' + Date.now();
+                let topicHTML = `
+                <div class="header-wrapper" id="${topicId}">
+                    <button class="edit-btn" onclick="editHeader('${topicId}-text', 'topic')">✏️ Edit</button>
+                    <div class="header-title" id="${topicId}-text">${topicVal}</div>
+                </div>`;
+                container.innerHTML += topicHTML;
+                document.getElementById('topic').value = ""; 
+            }
 
-            document.getElementById('pdfPreviewArea').innerHTML = html;
+            // 2. नया Type जोड़ें (Edit बटन के साथ)
+            if(typeVal !== "") {
+                let typeId = 'type-' + Date.now();
+                let typeHTML = `
+                <div class="type-wrapper" id="${typeId}">
+                    <button class="edit-btn" onclick="editHeader('${typeId}-text', 'type')">✏️ Edit</button>
+                    <div class="header-type" id="${typeId}-text">${typeVal}</div>
+                </div>`;
+                container.innerHTML += typeHTML;
+                document.getElementById('type').value = ""; 
+            }
 
-            if (window.MathJax && window.MathJax.typesetPromise) {
-                MathJax.typesetPromise().catch((err) => console.log(err));
+            // 3. प्रश्न जोड़ें
+            if(rawText !== "") {
+                let rawQuestions = rawText.split(/(?:^|[\r\n]+|\s+)(?=\d+\.)/g).filter(q => q.trim().length > 0);
+                
+                rawQuestions.forEach(qBlock => {
+                    qBlock = qBlock.trim();
+                    
+                    let tagMatch = qBlock.match(/\[.*?\]/);
+                    let tag = tagMatch ? tagMatch[0] : "";
+                    if(tag) qBlock = qBlock.replace(tag, "").trim(); 
+                    
+                    let optionsHtml = "";
+                    let aIndex = qBlock.search(/\(a\)/i);
+                    if(aIndex !== -1) {
+                        let optString = qBlock.substring(aIndex);
+                        qBlock = qBlock.substring(0, aIndex).trim(); 
+                        
+                        let a = optString.match(/\(a\)\s*(.*?)\s*(?=\(b\))/si);
+                        let b = optString.match(/\(b\)\s*(.*?)\s*(?=\(c\))/si);
+                        let c = optString.match(/\(c\)\s*(.*?)\s*(?=\(d\))/si);
+                        let d = optString.match(/\(d\)(.*)/si);
+                        
+                        let valA = a ? a[1].trim() : "";
+                        let valB = b ? b[1].trim() : "";
+                        let valC = c ? c[1].trim() : "";
+                        let valD = d ? d[1].trim() : "";
+                        
+                        optionsHtml = `<table class="options-table">
+                            <tr><td>(a) ${valA}</td><td>(b) ${valB}</td></tr>
+                            <tr><td>(c) ${valC}</td><td>(d) ${valD}</td></tr>
+                        </table>`;
+                    }
+
+                    let lines = qBlock.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                    let engText = [];
+                    let hinText = [];
+                    let hindiRegex = /[\u0900-\u097F]/; 
+
+                    lines.forEach(line => {
+                        if (hindiRegex.test(line)) {
+                            hinText.push(line);
+                        } else {
+                            engText.push(line);
+                        }
+                    });
+
+                    let blockId = 'q-' + Date.now() + Math.random().toString(36).substr(2, 5);
+
+                    let questionHTML = `
+                    <div class="question-block" id="${blockId}">
+                        <button class="delete-btn" onclick="document.getElementById('${blockId}').remove()">❌ Delete</button>
+                        ${engText.length > 0 ? `<div class="eng-text">${engText.join("<br>")}</div>` : ''}
+                        ${hinText.length > 0 ? `<div class="hin-text">${hinText.join("<br>")}</div>` : ''}
+                        ${tag ? `<div class="tag-container"><span class="tag">${tag}</span></div>` : ''}
+                        ${optionsHtml}
+                    </div>`;
+                    
+                    container.innerHTML += questionHTML;
+                });
+                document.getElementById('rawText').value = "";
+            }
+
+            document.getElementById('print-area').style.display = 'block';
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
             }
         }
 
-        function addTypeBanner() {
-            let name = document.getElementById('typeName').value.trim();
-            let topic = document.getElementById('typeTopic').value.trim();
-            if (!name && !topic) return;
-            contentItems.push({ type: 'banner', name: name || 'TYPE', topic: topic || '' });
-            renderDocument();
+        function editHeader(textId, inputFieldId) {
+            let currentText = document.getElementById(textId).innerText;
+            document.getElementById(inputFieldId).value = currentText;
+            document.getElementById(textId).closest('.header-wrapper, .type-wrapper').remove();
         }
 
-        function addNewQuestionForm() {
-            let num = document.getElementById('qNum').value.trim();
-            let tag = document.getElementById('qTag').value.trim();
-            let eng = document.getElementById('qEng').value.trim();
-            let hin = document.getElementById('qHin').value.trim();
-            let a = document.getElementById('optA').value.trim();
-            let b = document.getElementById('optB').value.trim();
-            let c = document.getElementById('optC').value.trim();
-            let d = document.getElementById('optD').value.trim();
-
-            if (!eng) return;
-
-            contentItems.push({
-                type: 'question',
-                data: { num: num || '1', tag, eng, hin, a, b, c, d }
-            });
-
-            renderDocument();
-
-            document.getElementById('qNum').value = '';
-            document.getElementById('qTag').value = '';
-            document.getElementById('qEng').value = '';
-            document.getElementById('qHin').value = '';
-            document.getElementById('optA').value = '';
-            document.getElementById('optB').value = '';
-            document.getElementById('optC').value = '';
-            document.getElementById('optD').value = '';
+        function clearPreview() {
+            if (confirm("क्या आप सच में सभी प्रश्नों को मिटाना चाहते हैं?")) {
+                document.getElementById('questions-container').innerHTML = "";
+                document.getElementById('print-area').style.display = 'none';
+            }
         }
-
-        // --- FIXED & IMPROVED BULK PARSER ---
-        function parseBulkInput() {
-            let rawText = document.getElementById('bulkInput').value;
-            if(!rawText.trim()) return;
-
-            // '---' से सभी सवालों को अलग-अलग ब्लॉक्स में बांटें
-            let blocks = rawText.split('---');
-            let currentAutoNum = 1;
-
-            // अगर पहले से कुछ सवाल हैं, तो ऑटो-नंबरिंग उनके आगे से शुरू हो सकती है
-            contentItems.forEach(item => {
-                if(item.type === 'question' && !isNaN(item.data.num)) {
-                    let n = parseInt(item.data.num);
-                    if(n >= currentAutoNum) currentAutoNum = n + 1;
-                }
-            });
-
-            blocks.forEach((block) => {
-                let text = block.trim();
-                if(!text) return;
-
-                // सवाल नंबर ढूंढना (जैसे "1." या "1)")
-                let numMatch = text.match(/^([0-9]+)[\.\)]\s*/);
-                let qNum = numMatch ? numMatch[1] : currentAutoNum++;
-                if(numMatch) text = text.replace(/^([0-9]+)[\.\)]\s*/, '');
-
-                // टैग ढूंढना (जैसे [SSC CPO 2024])
-                let tagText = '';
-                let tagMatch = text.match(/\[TAG:\s*([^\]]+)\]/i) || text.match(/\[(SSC[^\]]+|RRB[^\]]+|Selection[^\]]+|CGL[^\]]+|CHSL[^\]]+|GD[^\]]+)\]/i);
-                if (tagMatch) {
-                    tagText = tagMatch[1].trim();
-                    text = text.replace(tagMatch[0], '');
-                }
-
-                // ऑप्शन्स (a), (b), (c), (d) ढूंढना
-                let optA = '', optB = '', optC = '', optD = '';
-                let aMatch = text.match(/\(a\)\s*([^\(]+)(?=\(b\)|$)/i);
-                let bMatch = text.match(/\(b\)\s*([^\(]+)(?=\(c\)|$)/i);
-                let cMatch = text.match(/\(c\)\s*([^\(]+)(?=\(d\)|$)/i);
-                let dMatch = text.match(/\(d\)\s*([^\n]+)/i);
-
-                if(aMatch) optA = aMatch[1].trim();
-                if(bMatch) optB = bMatch[1].trim();
-                if(cMatch) optC = cMatch[1].trim();
-                if(dMatch) optD = dMatch[1].trim();
-
-                // मुख्य प्रश्न का हिस्सा (जहाँ से ऑप्शन्स शुरू होते हैं, उसके पहले का टेक्स्ट)
-                let mainTextPart = text;
-                if(aMatch) {
-                    let idx = text.indexOf('(a)');
-                    if(idx !== -1) mainTextPart = text.substring(0, idx).trim();
-                }
-
-                // अंग्रेजी और हिंदी लाइनों को अलग करना
-                let lines = mainTextPart.split('\n').map(l => l.trim()).filter(l => l);
-                let engLines = [], hinLines = [];
-                lines.forEach(l => {
-                    if (/[\u0900-\u097F]/.test(l)) {
-                        hinLines.push(l);
-                    } else {
-                        engLines.push(l);
-                    }
-                });
-
-                // लिस्ट में जोड़ें
-                contentItems.push({
-                    type: 'question',
-                    data: {
-                        num: qNum,
-                        tag: tagText,
-                        eng: engLines.join(' '),
-                        hin: hinLines.join(' '),
-                        a: optA, 
-                        b: optB, 
-                        c: optC, 
-                        d: optD
-                    }
-                });
-            });
-
-            // बॉक्स खाली करें और रेंडर करें
-            document.getElementById('bulkInput').value = '';
-            renderDocument();
-        }
-
-        window.onload = function() {
-            renderDocument();
-        };
     </script>
 </body>
 </html>
